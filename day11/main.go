@@ -10,6 +10,7 @@ import (
 func main() {
 	lines := readLines("input.txt")
 	h, w := len(lines), len(lines[0])
+	dirs := []struct{ y, x int }{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}
 
 	{
 		fmt.Println("--- Part One ---")
@@ -22,17 +23,16 @@ func main() {
 		for {
 			for y := 0; y < h; y++ {
 				for x := 0; x < w; x++ {
-					area := 0 // includes the center seat itself
-					for yy := max(y-1, 0); yy <= y+1 && yy < h; yy++ {
-						for xx := max(x-1, 0); xx <= x+1 && xx < w; xx++ {
-							if current[yy][xx] == '#' {
-								area++
-							}
+					neighbors := 0
+					for _, d := range dirs {
+						yy, xx := y+d.y, x+d.x
+						if yy >= 0 && yy < h && xx >= 0 && xx < w && current[yy][xx] == '#' {
+							neighbors++
 						}
 					}
-					if current[y][x] == 'L' && area == 0 {
+					if current[y][x] == 'L' && neighbors == 0 {
 						next[y][x] = '#'
-					} else if current[y][x] == '#' && area-1 >= 4 {
+					} else if current[y][x] == '#' && neighbors >= 4 {
 						next[y][x] = 'L'
 					} else {
 						next[y][x] = current[y][x]
@@ -61,7 +61,7 @@ func main() {
 			for y := 0; y < h; y++ {
 				for x := 0; x < w; x++ {
 					neighbors := 0
-					for _, d := range []struct{ x, y int }{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}} {
+					for _, d := range dirs {
 						for yy, xx := y+d.y, x+d.x; yy >= 0 && yy < h && xx >= 0 && xx < w; yy, xx = yy+d.y, xx+d.x {
 							if current[yy][xx] == '#' {
 								neighbors++
