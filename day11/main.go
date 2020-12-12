@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"reflect"
 )
 
 func main() {
@@ -20,7 +19,8 @@ func main() {
 			next = append(next, []byte(line))
 		}
 
-		for {
+		for changed := true; changed; current, next = next, current {
+			changed = false
 			for y := 0; y < h; y++ {
 				for x := 0; x < w; x++ {
 					neighbors := 0
@@ -32,17 +32,14 @@ func main() {
 					}
 					if current[y][x] == 'L' && neighbors == 0 {
 						next[y][x] = '#'
+						changed = true
 					} else if current[y][x] == '#' && neighbors >= 4 {
 						next[y][x] = 'L'
+						changed = true
 					} else {
 						next[y][x] = current[y][x]
 					}
 				}
-			}
-
-			current, next = next, current
-			if reflect.DeepEqual(current, next) {
-				break
 			}
 		}
 
@@ -57,7 +54,8 @@ func main() {
 			next = append(next, []byte(line))
 		}
 
-		for {
+		for changed := true; changed; current, next = next, current {
+			changed = false
 			for y := 0; y < h; y++ {
 				for x := 0; x < w; x++ {
 					neighbors := 0
@@ -74,17 +72,14 @@ func main() {
 					}
 					if current[y][x] == 'L' && neighbors == 0 {
 						next[y][x] = '#'
+						changed = true
 					} else if current[y][x] == '#' && neighbors >= 5 {
 						next[y][x] = 'L'
+						changed = true
 					} else {
 						next[y][x] = current[y][x]
 					}
 				}
-			}
-
-			current, next = next, current
-			if reflect.DeepEqual(current, next) {
-				break
 			}
 		}
 
