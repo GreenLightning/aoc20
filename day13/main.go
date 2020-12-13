@@ -18,8 +18,7 @@ func main() {
 	var list []bus
 	for i, entry := range strings.Split(lines[1], ",") {
 		if entry != "x" {
-			id := toInt(entry)
-			list = append(list, bus{i % id, id})
+			list = append(list, bus{i, toInt(entry)})
 		}
 	}
 
@@ -27,7 +26,7 @@ func main() {
 		fmt.Println("--- Part One ---")
 		earliestDelay, earliestID := math.MaxInt32, -1
 		for _, bus := range list {
-			delay := (bus.id - ready%bus.id) % bus.id
+			delay := bus.id - ready%bus.id
 			if delay < earliestDelay {
 				earliestDelay, earliestID = delay, bus.id
 			}
@@ -41,8 +40,7 @@ func main() {
 		for _, bus := range list {
 			for k := 0; ; k++ {
 				t := k*multiplier + offset
-				delay := (bus.id - t%bus.id) % bus.id
-				if delay == bus.index {
+				if (t+bus.index)%bus.id == 0 {
 					multiplier *= bus.id
 					offset = t
 					break
